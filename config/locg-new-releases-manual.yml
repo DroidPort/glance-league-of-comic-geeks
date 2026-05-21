@@ -1,0 +1,145 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/not-first/glance-schema/master/schema.json#/definitions/widget
+- type: custom-api
+  title: New Releases
+  frameless: true
+  cache: 1h
+  url: http://locg_bridge:4463/new-releases?limit=15
+  template: |
+    {{ $items := .JSON.Array "" }}
+    {{ if gt (len $items) 0 }}
+      <style>
+        .locg-container {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .locg-ticker-wrapper {
+          overflow-x: auto;
+          overflow-y: hidden;
+          padding: 8px 0;
+          scrollbar-width: thin;
+          scrollbar-color: var(--color-primary) transparent;
+        }
+
+        .locg-ticker-wrapper::-webkit-scrollbar {
+          height: 6px;
+        }
+
+        .locg-ticker-wrapper::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        .locg-ticker-wrapper::-webkit-scrollbar-thumb {
+          background: var(--color-primary);
+          border-radius: 3px;
+          opacity: 0.3;
+        }
+
+        .locg-ticker-wrapper::-webkit-scrollbar-thumb:hover {
+          opacity: 0.6;
+        }
+
+        .locg-ticker {
+          display: flex;
+          gap: 16px;
+          width: max-content;
+          will-change: transform;
+          transform: translate3d(0, 0, 0);
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          text-rendering: optimizeLegibility;
+        }
+
+        .locg-card {
+          flex: 0 0 auto;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-decoration: none;
+          color: inherit;
+          width: 100px;
+          transform: translateZ(0);
+        }
+
+        .locg-card img {
+          width: 100px;
+          height: 152px;
+          object-fit: cover;
+          border-radius: var(--border-radius);
+          will-change: transform;
+          image-rendering: -webkit-optimize-contrast;
+          transform: translateZ(0);
+        }
+
+        .locg-card-title {
+          margin-top: 6px;
+          font-size: 0.72em;
+          line-height: 1.3;
+          text-align: center;
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          color: var(--color-primary);
+          font-weight: 600;
+          transform: translateZ(0);
+        }
+
+        .locg-card-pub {
+          font-size: 0.65em;
+          opacity: 0.5;
+          margin-top: 2px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 100px;
+        }
+
+        .locg-footer {
+          margin-top: 4px;
+          padding: 0 var(--padding-inline-widget);
+          display: flex;
+          justify-content: flex-end;
+        }
+
+        .locg-see-all {
+          text-decoration: none;
+          font-size: 0.7em;
+          color: var(--color-primary);
+          opacity: 0.5;
+          transition: opacity 0.2s;
+        }
+
+        .locg-see-all:hover {
+          opacity: 1;
+          text-decoration: underline;
+        }
+      </style>
+
+      <div class="locg-container">
+        <div class="locg-ticker-wrapper">
+          <div class="locg-ticker">
+            {{ range $items }}
+            <a href="{{ .String "comic_url" }}" target="_blank" class="locg-card">
+              {{ $image := .String "cover_medium" }}
+              {{ if ne $image "" }}
+                <img src="{{ $image }}" alt="{{ .String "title" }}" loading="lazy" />
+              {{ else }}
+                <div style="width: 100px; height: 152px; background: var(--color-background-secondary); border-radius: var(--border-radius); display: flex; align-items: center; justify-content: center; opacity: 0.4; font-size: 0.7em;">No image</div>
+              {{ end }}
+              <div class="locg-card-title">{{ .String "title" }}</div>
+              <div class="locg-card-pub">{{ .String "publisher" }}</div>
+            </a>
+            {{ end }}
+          </div>
+        </div>
+
+        <div class="locg-footer">
+          <a href="https://www.leagueofcomicgeeks.com/comics/new-comics" target="_blank" class="locg-see-all">
+            See all new releases →
+          </a>
+        </div>
+      </div>
+    {{ else }}
+      <div class="padding-inline-widget margin-top-10 margin-bottom-10">No new releases available.</div>
+    {{ end }}

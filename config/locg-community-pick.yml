@@ -1,0 +1,40 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/not-first/glance-schema/master/schema.json#/definitions/widget
+- type: custom-api
+  title: Community Pick of the Week
+  frameless: true
+  cache: 1h
+  url: http://locg_bridge:4463/discovery
+  template: |
+    {{ $items := .JSON.Array "community_pick_of_the_week" }}
+    {{ if gt (len $items) 0 }}
+      <div style="display: flex; gap: 12px; overflow-x: auto; padding: 8px;">
+        {{ range $items }}
+          <a href="{{ .String "comic_url" }}" target="_blank"
+            style="flex: 0 0 140px; text-decoration: none; color: inherit;">
+            {{ $cover := .String "cover_medium" }}
+            {{ if ne $cover "" }}
+              <img src="{{ $cover }}"
+                  alt="{{ .String "title" }}"
+                  loading="lazy"
+                  style="width: 140px; aspect-ratio: 2/3; object-fit: cover; border-radius: var(--border-radius); display: block;" />
+            {{ else }}
+              <div style="width: 140px; aspect-ratio: 2/3; background: #222; border-radius: var(--border-radius); display: flex; align-items: center; justify-content: center; color: #ddd;">
+                No cover
+              </div>
+            {{ end }}
+            <div style="margin-top: 6px; font-size: 0.8em; line-height: 1.3;">
+              <div style="overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; color: var(--color-primary);">
+                {{ .String "title" }}
+              </div>
+              <div style="opacity: 0.6; margin-top: 2px;">
+                {{ .String "publisher" }}
+              </div>
+            </div>
+          </a>
+        {{ end }}
+      </div>
+    {{ else }}
+      <div class="padding-inline-widget margin-top-10 margin-bottom-10">
+        No community pick this week.
+      </div>
+    {{ end }}

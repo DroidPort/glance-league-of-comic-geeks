@@ -1,0 +1,48 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/not-first/glance-schema/master/schema.json#/definitions/widget
+- type: custom-api
+  title: Picks of the Week
+  frameless: true
+  cache: 1h
+  url: http://locg_bridge:4463/discovery
+  template: |
+    {{ $community := .JSON.Array "community_pick_of_the_week" }}
+    {{ $indie := .JSON.Array "indie_pick_of_the_week" }}
+    <div style="display: flex; gap: 16px; padding: 8px;">
+      {{ range $community }}
+      <div style="flex: 1;">
+        <div style="font-size: 0.7em; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.5; margin-bottom: 8px;">Community Pick</div>
+        <a href="{{ .String "comic_url" }}" target="_blank" style="text-decoration: none; color: inherit; display: flex; gap: 10px;">
+          {{ $cover := .String "cover_medium" }}
+          {{ if ne $cover "" }}
+            <img src="{{ $cover }}"
+                alt="{{ .String "title" }}"
+                loading="lazy"
+                style="width: 60px; aspect-ratio: 2/3; object-fit: cover; border-radius: var(--border-radius); flex-shrink: 0;" />
+          {{ end }}
+          <div style="font-size: 0.85em; line-height: 1.4;">
+            <div style="font-weight: bold; color: var(--color-primary); margin-bottom: 4px;">{{ .String "title" }}</div>
+            <div style="opacity: 0.6;">{{ .String "publisher" }}</div>
+          </div>
+        </a>
+      </div>
+      {{ end }}
+      <div style="width: 1px; background: var(--color-border); flex-shrink: 0;"></div>
+      {{ range $indie }}
+      <div style="flex: 1;">
+        <div style="font-size: 0.7em; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.5; margin-bottom: 8px;">Indie Pick</div>
+        <a href="{{ .String "comic_url" }}" target="_blank" style="text-decoration: none; color: inherit; display: flex; gap: 10px;">
+          {{ $cover := .String "cover_medium" }}
+          {{ if ne $cover "" }}
+            <img src="{{ $cover }}"
+                alt="{{ .String "title" }}"
+                loading="lazy"
+                style="width: 60px; aspect-ratio: 2/3; object-fit: cover; border-radius: var(--border-radius); flex-shrink: 0;" />
+          {{ end }}
+          <div style="font-size: 0.85em; line-height: 1.4;">
+            <div style="font-weight: bold; color: var(--color-primary); margin-bottom: 4px;">{{ .String "title" }}</div>
+            <div style="opacity: 0.6;">{{ .String "publisher" }}</div>
+          </div>
+        </a>
+      </div>
+      {{ end }}
+    </div>

@@ -1,0 +1,29 @@
+networks:
+  glance_net:
+  
+services:
+  glance:
+    container_name: glance
+    image: glanceapp/glance
+    restart: unless-stopped
+    networks: 
+      - glance_net
+    volumes:
+      - ./config:/app/config
+      - ./assets:/app/assets
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 127.0.0.1:8080:8080
+
+  glance_bridge:
+    container_name: locg_bridge
+    image: glance-locg-bridge:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    networks:
+      - glance_net
+    platform: linux/amd64
+    ports:
+      - 127.0.0.1:4463:4463
